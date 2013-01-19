@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}
+文档列表 - 
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+  $('ul.nav li.active').removeClass();
+  $('ul.nav a:contains("文章列表")').parents('li').addClass('active');
+</script>
+{% endblock %}
+{% block body %}
+<div class="box archive">
+  <ul>
+  {% for post in posts %}
+  <li class="archive">
+  <article>
+    <a href="/post/{{ post.id }}">{{ post.title }}</a><span class="time">< {{ formatDate2(post.created_date) }} ></span>
+    {% if 'user' in session %}
+      <a href="/post/edit/{{post.id}}">编辑</a>
+    {% endif%}
+  </article>
+  </li>
+  {% endfor %}
+</ul>
+  <div class="pagination">
+    <ul>
+      <li class="prev">
+        <a href="/page/{{ page - 1 }}">上一页</a>
+      </li>
+      {% for p in range(page_count) %}
+        {% if p + 1 == page %}
+        <li class="active">
+        {% else %}
+        <li>
+        {% endif %}
+          <a href="/page/{{ p + 1 }}">{{ p + 1 }}</a>
+        </li>
+      {% endfor %}
+      {% if page == page_count %}
+      <li class="next active">
+      {% else %}
+      <li class="next">
+      {% endif %}
+        <a href="/page/{{ page + 1 }}">下一页</a>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

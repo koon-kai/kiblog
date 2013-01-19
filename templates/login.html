@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div id="editor" class="form box login">
+  <div class="info">
+  </div>
+  <form id="login" class="login" method="post" action="/login">
+    <div class="control-group">
+      <p>
+        <label for="user_name">用户名</label>
+        <input type="text" id="user_name" name="username" size="30">
+      </p>
+      <p>
+        <label for="user_password">密码</label>
+        <input type="password" id="user_password" name="password" size="30">
+      </p>
+    </div>
+    <div class="control-group">
+      <button id="submit" class="btn" type="submit">登录</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

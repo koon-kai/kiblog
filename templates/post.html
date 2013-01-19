@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ post.title }} - 
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static',filename='js/jquery.scrollTo.js') }}"></script>
+<script type="text/javascript">
+  $(function(){
+    $('a.at').click(
+      function(){
+        var parent = $(this).parents('.infos').children('.info');
+        var name = parent.children('.name').html();
+        var floor = parent.children('.floor').html();
+        var replyContent = $('#editor-input');
+        var oldContent = replyContent.val();
+        var prefix = "#" + floor + "楼" + " " + "@" + name + " ";
+        var newContent = '';
+        if (oldContent.length > 0) {
+          if (oldContent != prefix) {
+            newContent = oldContent + " " + prefix;
+          }
+        } else {
+          newContent = prefix;
+        }
+        replyContent.focus();
+        replyContent.val(newContent);
+      });
+    $('ul.nav li.active').removeClass();
+    $('a.toreply').mouseover(
+      function(e) {
+      var floor = $(this).children('span').html();
+      var parent = $('#' + floor);
+      var avatar = parent.children('.avatar').html();
+      var name = parent.children('.infos').children('.info').children('.name').html();
+      var content = parent.children('.reply_content').html();
+      var floater = "<div id='floater'>" + "<div class='avatar'>" + avatar + "<\/div>" + "<span class='float_name'>" + name + ":<\/span>" + "<div class='float_content'>" + content + "<\/div><\/div>";
+      $('body').append(floater);
+      $('#floater').css({
+        "position":"absolute",
+        "background-color":"rgba(255,255,255,0.8)",
+        "padding":"12px 15px",
+        "border-radius":"3px",
+        "box-shadow": "0px 0px 10px rgba(0, 0, 0, 0.8)",
+        "max-width":"550px",
+        "max-height":"500px",
+        "top":(e.pageY + 20) + "px",
+        "left":(e.pageX + 10) + "px"
+        }).show("fast");
+      }).mouseout(
+        function(){
+        $('#floater').remove();
+        });
+    $('a.toreply').click(function(){
+        var floor = $(this).children('span').html();
+        $('.isit').removeClass('isit');
+        $('#' + floor).addClass('isit');
+        $.scrollTo('#' + floor,500);
+        });
+    $('form :input').blur(function(){
+        if($(this).is('#reply_name')){
+          if(this.value == ''){
+            $('span.reply_name').css({"color":"#C01F2F"}).html("请输入正确的名字");
+          } else {
+            $('span.reply_name').css({"color":"#468847"}).html("√ 输入正确");
+          }
+        }
+        if($(this).is('#reply_email')){
+          if(this.value == '' || (this.value != "" && !/.+@.+\.[a-zA-Z]{2,4}$/.test(this.value))){
+            $('span.reply_email').css({"color":"#C01F2F"}).html("请输入正确的 E-Mail 地址");
+          } else {
+            $('span.reply_email').css({"color":"#468847"}).html("√ 输入正确");
+          }
+        }
+        }).keyup(function(){
+          $(this).triggerHandler('blur');
+        }).focus(function(){
+          var $editor = $('#editor-input');
+          $(this).triggerHandler('blur');
+        });
+    $('.btn').click(function(){
+        $('span.reply_name').css({"color":"#ccc"}).html("必填");
+        $('span.reply_email').css({"color":"#ccc"}).html("必填");
+        var $name = $('input#reply_name');
+        var $email = $('input#reply_email');
+        var $editor = $('#editor-input');
+        $editor.css({"border-color":"#DADADA"});
+        var error = 0;
+        if($name.val() == ''){
+          $('span.reply_name').css({"color":"#C01F2F"}).html("请输入正确的名字");
+          error = 1;
+        } else {
+          $('span.reply_name').css({"color":"#468847"}).html("√ 输入正确");
+        }
+        if($email.val() == '' || ($email.val() != "" && !/.+@.+\.[a-zA-Z]{2,4}$/.test($email.val()))){
+          $('span.reply_email').css({"color":"#C01F2F"}).html("请输入正确的 E-Mail 地址");
+          error = 1;
+        } else {
+          $('span.reply_email').css({"color":"#468847"}).html("√ 输入正确");
+        }
+        if($editor.val() == ''){
+          $editor.css({"border-color":"#C01F2F"});
+          error = 1;
+        }
+        if(error===1){
+        return false;
+        }
+        });
+    })
+</script>
+{% endblock %}
+{% block body %}
+<div id="post" class="box">
+  {% if current_user %}
+  <a class="title" href="/post/edit/{{ post.id }}">
+    <h1 class="title">
+      {{ post.title|safe }}
+    </h1>
+  </a>
+  {% else %}
+  <h1 class="title">
+    {{ post.title|safe }}
+  </h1>
+  {% endif %}
+  <div class="info">
+    {{ formatDate2(post.created_date) }}
+  </div>
+  <div class="post_content">
+    <div class="content">
+      {{ post.content|safe }}
+    </div>
+  </div>
+</div>
+<div id="reply" class="box">
+  <div class="total">
+    <span class="gray little">共收到 <b>{{ replys|length }}</b> 条回复</span>
+  </div>
+  {% for reply in replys %}
+  <div id="{{ reply.number }}" class="item-list">
+    <div class="avatar">
+      <a href=""><img src="{{ getAvatar(reply.email) }}"></a>
+    </div>
+    <div class="infos">
+      <div class="info">
+        <a class="name dark" href="{{ reply.website }}">{{ reply.name }}</a>
+        <span class="floor gray little">{{ reply.number }}</span>
+        <span class="gray little"> 楼，</span>
+        <span class="gray little">{{ formatDate(reply.created_date) }}</span>
+      </div>
+      <div class="reply_icon">
+        <a class="at" href="#;"><img src="{{ url_for('static',filename='img/reply.png') }}"></a>
+      </div>
+    </div>
+    <div class="reply_content">
+      {{ reply.content|safe }}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<div id="editor" class="form box">
+  <div class="info">
+  </div>
+  <form id="new_reply" class="new_reply" method="post" action="/reply/{{ post.id }}/add">
+    <div class="control-group reply-info">
+      <p>
+        <label for="reply_name">名字</label>
+        <input type="text" id="reply_name" name="reply[name]" size="30" value="{{ replyer['name'] }}">
+        <span class="reply_name neces">必填</span>
+      </p>
+      <p>
+        <label for="reply_email">邮箱</label>
+        <input type="text" id="reply_email" name="reply[email]" size="30" value="{{ replyer['email'] }}">
+        <span class="reply_email neces">必填</span>
+      </p>
+      <p>
+        <label for="reply_website">网址</label>
+        <input type="text" id="reply_website" name="reply[website]" size="30" value="{{ replyer['website'] }}">
+      </p>
+    </div>
+    <div class="control-group">
+      <textarea id="editor-input" name="reply[content]" rows="10" cols="60"></textarea>
+    </div>
+    <div class="control-group">
+      
+      <button id="submit" class="btn" type="submit">提交</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

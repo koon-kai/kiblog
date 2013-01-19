@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div id="editor" class="form box">
+  <div class="info">
+  </div>
+  <form id="new_post" class="new_post" method="post" action="/post/add">
+    <div class="control-group">
+      <p>
+        <label for="post_title">标题</label>
+        <input type="text" id="post_title" name="post[title]" size="60">
+      </p>
+    </div>
+    <div class="control-group">
+      <textarea id="editor-input" name="post[content]" rows="25" cols="65"></textarea>
+    </div>
+    <div class="control-group">
+    
+      <button id="submit" class="btn" type="submit">提交</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

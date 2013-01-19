@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta content="True" name="HandheldFriend">
+    <title>{% block title %}{% endblock %} {{ config['BLOG_TITLE'] }}</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static',filename='css/style.css') }}" />
+  </head>
+  <body>
+    <div id="top">
+      <div class="wrapper">
+        <a class="brand" href="/">
+          <h1>{{ config['BLOG_NAME'] }}</h1>
+        </a>
+        <ul class="nav">
+          <li class="active"><a href="/">首页</a></li>
+          <li><a href="/archive">文章列表</a></li>
+        </ul>
+        {% if 'user' in session %}
+        <ul class="nav pull-right">
+          <li class="dropdown" id="user_menu">
+            <a href="#user_menu" class="dropdown-toggle" data-toggle="dropdown">
+              <b class="caret">{{config['ADMIN_USERNAME']}}</b>
+            </a>
+          </li>
+          <li>
+              <a href="/post/add">添加文章</a>
+          </li>
+          <li>
+              <a href="/logout">登出</a>
+          </li>
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+    <div id="main">
+      <div class="wrapper">
+        <div id="content">
+          {% block body %}{% endblock %}
+        </div>
+        <div id="sidebar">
+          {% block sidebar %}
+          <div class="box aboutme">
+            <header>
+              About Me
+            </header>
+            <div class="content">
+              <div class="avatar">
+                <a href="{{ config['ADMIN_URL'] }}">
+                  <img src="{{ getAvatar(config['ADMIN_EMAIL'], 96) }}">
+                </a>
+              </div>
+              <div class="info">
+               <b>{{ config['ADMIN_INFO'] }}</b>
+              </div>
+            </div>
+          </div>
+          {% block insidebar %}
+          {% endblock %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+    <footer>
+       {% block footer %}
+      <div class="wrapper">
+        <p>Thanks for © yetone.</p>
+        <p class="copyright">Designed by <a href="http://blog.yetone.net" target="_blank">yetone</a>. Powered by <a href="http://flask.pocoo.org/">Flask</a></p>
+      </div>
+      {% endblock %}
+    </footer>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/jquery.js') }}"></script>
+    {% block script %}{% endblock %}
+  </body>
+</html>

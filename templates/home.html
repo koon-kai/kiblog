@@ -1,0 +1,83 @@
+﻿{% extends "base.html" %}
+
+{% block insidebar %}
+<div class="box recentreply">
+  <header>
+    Recent Replys
+  </header>
+  {% for r in recent_replys %}
+  <div class="item-list">
+    <div class="avatar">
+      <img src="{{ getAvatar(r.email, 24) }}">
+    </div>
+    <div class="rcontent">
+      <b><a class="name" href="{{ r.website }}">{{ r.name }}:</a></b>
+      <a href="/post/{{ r.pid }}">
+      {{ replyContent(r.origin_content)}}
+      </a>
+  </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
+{% block body %}
+<div class="box">
+  {% for post in posts %}
+  <div class="cell article">
+    <a class="ribbon date">
+      <div class="top ribbon-piece">
+        {{ getMonth(post.created_date) }}
+      </div>
+      <div class="bottom ribbon-piece">
+        {{ getDay(post.created_date) }}
+      </div>
+      <div class="tail">
+        <div class="left ribbon-piece">
+        </div>
+        <div class="right ribbon-piece">
+        </div>
+      </div>
+    </a>
+    <h1 class="title">
+      <a href="/post/{{ post.id }}">{{ post.title }}</a>
+    </h1>
+    <div class="info">
+      {{ formatDate(post.created_date) }}
+    </div>
+    <div class="show">
+      {{ showPost(post.content, post.id)|safe }}
+    </div>
+  </div>
+  {% endfor %}
+  {% if page_count > 1 and page == 1 %}
+  <div class="morepage"><a href="/page/2">>> 更多文章</a></div>
+  {% elif page_count != 1 %}
+    <div class="pagination">
+      <ul>
+        <li class="prev">
+          <a href="/page/{{ page - 1 }}">上一页</a>
+        </li>
+        {% for p in range(page_count) %}
+          {% if p + 1 == page %}
+          <li class="active">
+          {% else %}
+          <li>
+          {% endif %}
+            <a href="/page/{{ p + 1 }}">{{ p + 1 }}</a>
+          </li>
+        {% endfor %}
+        {% if page == page_count %}
+        <li class="next active">
+        {% else %}
+        <li class="next">
+        {% endif %}
+          <a href="/page/{{ page + 1 }}">下一页</a>
+        </li>
+      </ul>
+  </div>
+  {% else %}
+    <div class="pagination">
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

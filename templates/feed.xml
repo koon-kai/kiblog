@@ -1,0 +1,18 @@
+<rss version="2.0">
+    <channel>
+        <title>{{ config.title }}</title>
+        <link>{{ config.url }}</link>
+        <description>{{ config.description }}</description>
+        <language> en-us </language>
+        {% for post in posts %}
+        <item>
+            <title>{{ escape(post.title) }}</title>
+            <description>{{ escape(post.content) }}</description>
+            <author>{{config.admin_username }}</author>
+            <pubDate>{{ formatDate2(post.created_date) }}</pubDate>
+            <link>http://{{ request.host }}/post/{{ post.id }}</link>
+            <guid>http://{{ request.host }}/post/{{ post.id }}</guid>
+        </item>
+        {% end %}
+    </channel>
+</rss>
