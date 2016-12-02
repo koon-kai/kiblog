@@ -50,12 +50,12 @@
   </div>
   {% endfor %}
   {% if page_count > 1 and page == 1 %}
-  <div class="morepage"><a href="/page/2">>> 更多文章</a></div>
+  <div class="morepage"><a href="/2">>> 更多文章</a></div>
   {% elif page_count != 1 %}
     <div class="pagination">
       <ul>
         <li class="prev">
-          <a href="/page/{{ page - 1 }}">上一页</a>
+          <a href="/{{ page - 1 }}">上一页</a>
         </li>
         {% for p in range(page_count) %}
           {% if p + 1 == page %}
@@ -63,7 +63,7 @@
           {% else %}
           <li>
           {% endif %}
-            <a href="/page/{{ p + 1 }}">{{ p + 1 }}</a>
+            <a href="/{{ p + 1 }}">{{ p + 1 }}</a>
           </li>
         {% endfor %}
         {% if page == page_count %}
@@ -71,7 +71,7 @@
         {% else %}
         <li class="next">
         {% endif %}
-          <a href="/page/{{ page + 1 }}">下一页</a>
+          <a href="/{{ page + 1 }}">下一页</a>
         </li>
       </ul>
   </div>

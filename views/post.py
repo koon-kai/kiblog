@@ -26,6 +26,7 @@ def home(page):
     except ValueError: 
         page = 1
     #page = int(page)
+    if page < 1: abort(404)
     count = db.query(Post).count();
     page_count = (count + config.paged - 1) // config.paged
     posts = db.query(Post).order_by(sa.desc(Post.created_date)).offset((page - 1) *
@@ -65,6 +66,7 @@ def list_archive(page = 1):
     except ValueError: 
         page = 1
     #page = int(page)
+    if page < 1: abort(404)
     count = db.query(Post).count()
     page_count = (count + config.archive_paged - 1) // config.archive_paged
     posts = db.query(Post).order_by(sa.desc(Post.created_date)).offset((page - 1) *
